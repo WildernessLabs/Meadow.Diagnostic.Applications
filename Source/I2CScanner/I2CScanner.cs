@@ -18,7 +18,7 @@ namespace I2CScanner
         public I2CScanner(F7Micro device)
         {
             _device = device;
-            _speeds = new[] {I2cBusSpeed.Standard, I2cBusSpeed.Fast, I2cBusSpeed.FastPlus};
+            _speeds = new[] { I2cBusSpeed.Standard, I2cBusSpeed.Fast, I2cBusSpeed.FastPlus };
         }
 
         /// <summary>
@@ -37,11 +37,12 @@ namespace I2CScanner
         /// </summary>
         public void VerifyAndScan()
         {
-            if (!VerifyPins()) return;
+            if (!VerifyPins())
+                return;
             var results = ScanBusForDevices();
             foreach (var (speed, addresses) in results)
             {
-                Console.WriteLine($"Found {addresses.Count} devices @ {(int)speed/1000}kHz: {string.Join(", ", addresses.Select(x => $"{x:X}"))}");
+                Console.WriteLine($"Found {addresses.Count} devices @ {(int)speed / 1000}kHz: {string.Join(", ", addresses.Select(x => $"{x:X}"))}");
             }
 
             if (results.Values.All(x => x.Count == 0))
@@ -59,22 +60,30 @@ namespace I2CScanner
         /// <returns>A <see cref="bool"/> indicating if the check succeeded or failed.</returns>
         public bool VerifyPins()
         {
-            Console.WriteLine("Validating SCL and SDA pins");
             using (var scl = _device.CreateDigitalInputPort(_device.Pins.I2C_SCL, resistorMode: ResistorMode.PullDown))
-            {
-                if (scl.State == false)
-                {
-                    Console.WriteLine("SCL does not appear to have pull-up resistor.");
-                    return false;
-                }
-            }
             using (var sda = _device.CreateDigitalInputPort(_device.Pins.I2C_SDA, resistorMode: ResistorMode.PullDown))
             {
-                if (sda.State == false)
-                {
-                    Console.WriteLine("SDA does not appear to have pull-up resistor.");
-                    return false;
-                }
+                return VerifyPins(sda, scl);
+            }
+        }
+
+        /// <summary>
+        /// Verify that the I2C Pins are properly pulled up
+        /// </summary>
+        /// <returns>A <see cref="bool"/> indicating if the check succeeded or failed.</returns>
+        public static bool VerifyPins(IDigitalInputPort sda, IDigitalInputPort scl)
+        {
+            Console.WriteLine("Validating SCL and SDA pins");
+            if (scl.State == false)
+            {
+                Console.WriteLine("SCL does not appear to have pull-up resistor.");
+                return false;
+            }
+
+            if (sda.State == false)
+            {
+                Console.WriteLine("SDA does not appear to have pull-up resistor.");
+                return false;
             }
             Console.WriteLine("SDA and SCL Validated Successfully.");
             return true;
@@ -111,7 +120,7 @@ namespace I2CScanner
         /// </summary>
         /// <param name="bus">The <see cref="II2cBus"/> to scan.</param>
         /// <returns>A <see cref="IReadOnlyList{@byte}"/> of addresses responding on the bus.</returns>
-        public IReadOnlyList<byte> ScanBusForDevices(II2cBus bus)
+        public static IReadOnlyList<byte> ScanBusForDevices(II2cBus bus)
         {
             var validAddresses = new List<byte>(128);
             for (byte address = 0; address < 127; address++)
