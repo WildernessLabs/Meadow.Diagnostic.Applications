@@ -43,6 +43,14 @@ namespace I2CScanner
             {
                 Console.WriteLine($"Found {addresses.Count} devices @ {(int)speed/1000}kHz: {string.Join(", ", addresses.Select(x => $"{x:X}"))}");
             }
+
+            if (results.Values.All(x => x.Count == 0))
+            {
+                Console.WriteLine("No devices discovered. Please ensure the SDA and SCL pins are " +
+                                  "not reversed and all devices are correctly powered. " +
+                                  "Ensure all 3.3V devices are not powered by 5V " +
+                                  "and no 5V devices are powered by 3.3V.");
+            }
         }
 
         /// <summary>
