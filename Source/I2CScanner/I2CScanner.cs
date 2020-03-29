@@ -11,18 +11,30 @@ namespace I2CScanner
         private readonly F7Micro _device;
         private readonly IReadOnlyList<I2cBusSpeed> _speeds;
 
+        /// <summary>
+        /// Create a <see cref="I2CScanner"/> that will scan all <seealso cref="I2cBusSpeed"/>
+        /// </summary>
+        /// <param name="device">The <see cref="F7Micro"/> on which the application is running</param>
         public I2CScanner(F7Micro device)
         {
             _device = device;
             _speeds = new[] {I2cBusSpeed.Standard, I2cBusSpeed.Fast, I2cBusSpeed.FastPlus};
         }
 
+        /// <summary>
+        /// Create a <see cref="I2CScanner"/> that will scan the provided <see cref="IReadOnlyList{T}"/> of <see cref="I2cBusSpeed"/>
+        /// </summary>
+        /// <param name="device">The <see cref="F7Micro"/> on which the application is running</param>
+        /// <param name="speeds">The <see cref="IReadOnlyList{T}"/> of <see cref="I2cBusSpeed"/> to scan</param>
         public I2CScanner(F7Micro device, IReadOnlyList<I2cBusSpeed> speeds)
         {
             _device = device;
             _speeds = speeds;
         }
 
+        /// <summary>
+        /// Run all verification tests
+        /// </summary>
         public void VerifyAndScan()
         {
             if (!VerifyPins()) return;
