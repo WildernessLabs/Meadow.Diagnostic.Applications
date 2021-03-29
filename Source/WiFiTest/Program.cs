@@ -94,6 +94,8 @@ namespace WiFiTest
 
                     Console.WriteLine(weather);
                     rgbPwmLed.SetColor(Color.Green);
+                    await Task.Delay(5000)
+                              .ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
