@@ -50,8 +50,7 @@ namespace WiFiTest
             {
                 rgbPwmLed.SetColor(Color.Blue);
                 Console.WriteLine("Initialize WiFi adapter...");
-                await Device.InitWiFiAdapter()
-                            .ConfigureAwait(false);
+                Device.WiFiAdapter.StartWiFiInterface();
 
                 Console.WriteLine("Initialized WiFi adapter, scanning for networks.");
                 foreach (var network in Device.WiFiAdapter.Scan())

@@ -60,8 +60,8 @@ namespace I2CScanner
         /// <returns>A <see cref="bool"/> indicating if the check succeeded or failed.</returns>
         public bool VerifyPins()
         {
-            using (var scl = _device.CreateDigitalInputPort(_device.Pins.I2C_SCL, resistorMode: ResistorMode.PullDown))
-            using (var sda = _device.CreateDigitalInputPort(_device.Pins.I2C_SDA, resistorMode: ResistorMode.PullDown))
+            using (var scl = _device.CreateDigitalInputPort(_device.Pins.I2C_SCL, resistorMode: ResistorMode.InternalPullDown))
+            using (var sda = _device.CreateDigitalInputPort(_device.Pins.I2C_SDA, resistorMode: ResistorMode.InternalPullDown))
             {
                 return VerifyPins(sda, scl);
             }
