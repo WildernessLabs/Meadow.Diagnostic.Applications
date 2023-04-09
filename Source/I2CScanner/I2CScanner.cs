@@ -8,14 +8,14 @@ namespace I2CScanner
 {
     public class I2CScanner
     {
-        private readonly F7Micro _device;
+        private readonly F7FeatherBase _device;
         private readonly IReadOnlyList<I2cBusSpeed> _speeds;
 
         /// <summary>
         /// Create a <see cref="I2CScanner"/> that will scan all <seealso cref="I2cBusSpeed"/>
         /// </summary>
-        /// <param name="device">The <see cref="F7Micro"/> on which the application is running</param>
-        public I2CScanner(F7Micro device)
+        /// <param name="device">The <see cref="F7FeatherBase"/> on which the application is running</param>
+        public I2CScanner(F7FeatherBase device)
         {
             _device = device;
             _speeds = new[] { I2cBusSpeed.Standard, I2cBusSpeed.Fast, I2cBusSpeed.FastPlus };
@@ -24,9 +24,9 @@ namespace I2CScanner
         /// <summary>
         /// Create a <see cref="I2CScanner"/> that will scan the provided <see cref="IReadOnlyList{T}"/> of <see cref="I2cBusSpeed"/>
         /// </summary>
-        /// <param name="device">The <see cref="F7Micro"/> on which the application is running</param>
+        /// <param name="device">The <see cref="F7FeatherBase"/> on which the application is running</param>
         /// <param name="speeds">The <see cref="IReadOnlyList{T}"/> of <see cref="I2cBusSpeed"/> to scan</param>
-        public I2CScanner(F7Micro device, IReadOnlyList<I2cBusSpeed> speeds)
+        public I2CScanner(F7FeatherBase device, IReadOnlyList<I2cBusSpeed> speeds)
         {
             _device = device;
             _speeds = speeds;
@@ -123,13 +123,14 @@ namespace I2CScanner
         public static IReadOnlyList<byte> ScanBusForDevices(II2cBus bus)
         {
             var validAddresses = new List<byte>(128);
+            var data = new byte[] { 0x00 };
             for (byte address = 0; address < 127; address++)
             {
                 if (IsReservedAddress(address))
                     continue;
                 try
                 {
-                    bus.ReadData(address, 1);
+                    bus.Read(address, data);
                     validAddresses.Add(address);
                 }
                 catch

@@ -5,12 +5,12 @@
 	  <Authors>Wilderness Labs, Inc</Authors>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	  <TargetFramework>netstandard2.1</TargetFramework>
-	  <OutputType>Exe</OutputType>
+	  <OutputType>Library</OutputType>
 	  <AssemblyName>App</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.F7" Version="0.30.1" />
-    <PackageReference Include="Meadow.Foundation" Version="*" />
+    <PackageReference Include="Meadow.F7" Version="0.*" />
+    <PackageReference Include="Meadow.Foundation" Version="0.*" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
