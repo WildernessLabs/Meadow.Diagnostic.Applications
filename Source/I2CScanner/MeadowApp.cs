@@ -1,10 +1,10 @@
-﻿using System;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
+using System;
 
 namespace I2CScanner
 {
-    public class MeadowApp : App<F7Micro, MeadowApp>
+    public class MeadowApp : App<F7FeatherV2>
     {
         public MeadowApp()
         {
