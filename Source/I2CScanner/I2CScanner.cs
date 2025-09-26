@@ -9,14 +9,14 @@ namespace I2CScanner
 {
     public class I2CScanner
     {
-        private readonly IF7FeatherMeadowDevice _device;
+        private readonly IF7MeadowDevice _device;
         private readonly IReadOnlyList<I2cBusSpeed> _speeds;
 
         /// <summary>
         /// Create a <see cref="I2CScanner"/> that will scan all <seealso cref="I2cBusSpeed"/>
         /// </summary>
         /// <param name="device">The <see cref="F7Micro"/> on which the application is running</param>
-        public I2CScanner(IF7FeatherMeadowDevice device)
+        public I2CScanner(IF7MeadowDevice device)
         {
             _device = device;
             _speeds = new[] { I2cBusSpeed.Standard, I2cBusSpeed.Fast, I2cBusSpeed.FastPlus };
@@ -36,14 +36,14 @@ namespace I2CScanner
         /// <summary>
         /// Run all verification tests
         /// </summary>
-        public void VerifyAndScan()
+        public void VerifyAndScan(int busNumber)
         {
             /*if (!VerifyPins())
             {
                 return;
             }*/
 
-            var results = ScanBusForDevices();
+            var results = ScanBusForDevices(busNumber);
             foreach (var (speed, addresses) in results)
             {
                 Console.WriteLine($"Found {addresses.Count} devices @ {(int)speed / 1000}kHz: {string.Join(", ", addresses.Select(x => $"{x:X}"))}");
@@ -62,14 +62,14 @@ namespace I2CScanner
         /// Verify that the I2C Pins are properly pulled up
         /// </summary>
         /// <returns>A <see cref="bool"/> indicating if the check succeeded or failed.</returns>
-        public bool VerifyPins()
+        /* public bool VerifyPins()
         {
             using (var scl = _device.CreateDigitalInputPort(_device.Pins.I2C_SCL, ResistorMode.InternalPullDown))
             using (var sda = _device.CreateDigitalInputPort(_device.Pins.I2C_SDA, ResistorMode.InternalPullDown))
             {
                 return VerifyPins(sda, scl);
             }
-        }
+        } */
 
         /// <summary>
         /// Verify that the I2C Pins are properly pulled up
@@ -98,7 +98,7 @@ namespace I2CScanner
         /// </summary>
         /// <returns>A dictionary keyed on the speed of the bus during the scan containing a
         /// list of each address that responded on the bus.</returns>
-        public IReadOnlyDictionary<I2cBusSpeed, IReadOnlyList<byte>> ScanBusForDevices()
+        public IReadOnlyDictionary<I2cBusSpeed, IReadOnlyList<byte>> ScanBusForDevices(int busNumber)
         {
             var results = new Dictionary<I2cBusSpeed, IReadOnlyList<byte>>();
             foreach (var speed in _speeds)
@@ -106,7 +106,7 @@ namespace I2CScanner
                 try
                 {
                     Console.WriteLine($"Scanning I2C Bus @ {(int)speed / 1000}kHz...");
-                    var bus = _device.CreateI2cBus(busSpeed: speed);
+                    var bus = _device.CreateI2cBus(busNumber, busSpeed: speed);
                     results.Add(speed, ScanBusForDevices(bus));
                     Console.WriteLine("Scanning I2C Bus complete.");
                 }
